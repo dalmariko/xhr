@@ -17,6 +17,8 @@
 
 // TODO: при клике на имя пользователя у меня должен открыться блок с подробной информацией об этом пользователе
 
+
+
 const url = 'https://jsonplaceholder.typicode.com';
 const xhr = new XMLHttpRequest();
 xhr.open('get', `${url}/users`);
@@ -25,9 +27,23 @@ xhr.setRequestHeader("Content-Encoding", "gzip");
 xhr.send();
 xhr.addEventListener('load', () => {
 
+    const onNameCick = e =>{
+        if (e.target.classList.contains('letsShow')){
+            const div = e.target.closest('div');
+            const id = div.dataset.id;
+            const ul = document.querySelector(`div[data-id="${id}"] ul`);
+            ul.classList.toggle('hidden');
+        }
+    };
+
+
     const users = JSON.parse(xhr.responseText);
 
     users.forEach((user) => getInfoUser(user));
+
+    const userName = document.querySelector('.users');
+    userName.addEventListener('click', onNameCick);
+
 
 });
 
@@ -37,28 +53,17 @@ xhr.addEventListener('error', () => {
 });
 
 
-
-
-
-
-
-
-//Пробежаться по массиву
-//
-
-
-
 function addUserInfo(userInfo) {
     const allUsers = document.querySelector('.users');
     allUsers.insertAdjacentHTML('beforeend', userInfo);
 }
 
 function parseDeep(user) {
-    let info='';
+    let info = '';
     for (let key in user) {
-        if (typeof user[key] !== 'object' ) {
+        if (typeof user[key] !== 'object') {
             info += `<li><b>${key} :</b> <span>${user[key]}</span></li>`;
-        }else{
+        } else {
             info += `<ul><li><b>${key} :</b> <span>${parseDeep(user[key])}</span></li></ul>`;
         }
     }
@@ -77,9 +82,9 @@ function getInfoUser(user) {
 
     info =
         `
-        <div data-set="${id}">
-            <h2>${name}</h2>
-            <ul>
+        <div data-id="${id}">
+            <h2 class="letsShow">${name}</h2>
+            <ul class="hidden">
                 ${userInfo}
             </ul>
         </div>
@@ -87,7 +92,6 @@ function getInfoUser(user) {
 
     addUserInfo(info);
 }
-
 
 
 
