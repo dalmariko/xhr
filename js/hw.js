@@ -19,8 +19,7 @@
 
 const url = 'https://jsonplaceholder.typicode.com';
 const xhr = new XMLHttpRequest();
-// xhr.open('get', `${url}/users`);
-xhr.open('get', `${url}/photos`);
+xhr.open('get', `${url}/users`);
 xhr.setRequestHeader("Content-type", "application/json");
 xhr.setRequestHeader("Content-Encoding", "gzip");
 xhr.send();
