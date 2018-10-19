@@ -9,14 +9,6 @@
  */
 
 
-// TODO: Сделать запрос на сервер по адресу "https://jsonplaceholder.typicode.com/users"
-
-// TODO: Получить ответ преобразовать его из json в обычный массив объектов
-
-// TODO: вывести на страницу список пользователей, выводить только имя (name)
-
-// TODO: при клике на имя пользователя у меня должен открыться блок с подробной информацией об этом пользователе
-
 
 // TODO Переписать на промисы домашнее задание по ajax с пользователями которое
 
@@ -33,7 +25,7 @@ function promisGetUsersInfo(url) {
         xhr.send();
 
         xhr.addEventListener('load',() => {resolve(JSON.parse(xhr.responseText));} );
-        xhr.addEventListener('error',() => reject(erors.eror =`Произошла ошибка соединения по адрессу ${url}`));
+        xhr.addEventListener('error',() => reject(erors.eror = `Произошла ошибка соединения по адрессу ${url}`));
 
     })
 }
@@ -55,8 +47,7 @@ function parseDeep(user) {
     return info;
 }
 
-function promisGetUser(user) {
-   return new Promise((resolve,reject)=>{
+function getUser(user) {
        let name;
        let id;
        let userInfo = '';
@@ -75,20 +66,15 @@ function promisGetUser(user) {
             </ul>
         </div>
     `;
-
-      resolve(info);
-      reject(erors.eror=`Ошибка парсинга`)
-   })
+return info;
 }
+
 
 const url = 'https://jsonplaceholder.typicode.com/users';
 
 promisGetUsersInfo(url)
     .then(users=>{
-        users.forEach(user=>{
-                       promisGetUser(user)
-                       .then(userinfo=>addUserInfo(userinfo))
-        })
+        users.forEach(user=>{addUserInfo(getUser(user))})
     })
     .catch(err => console.error(erors.eror));
 
