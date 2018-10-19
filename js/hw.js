@@ -22,7 +22,7 @@
 
 
 
-erros={eror:[]};
+const erors={eror:[]};
 
 function promisGetUsersInfo(url) {
     return new Promise((resolve, reject) => {
@@ -33,7 +33,7 @@ function promisGetUsersInfo(url) {
         xhr.send();
 
         xhr.addEventListener('load',() => {resolve(JSON.parse(xhr.responseText));} );
-        xhr.addEventListener('error',() => reject(erros.eror =`Произошла ошибка соединения по адрессу ${url}`));
+        xhr.addEventListener('error',() => reject(erors.eror =`Произошла ошибка соединения по адрессу ${url}`));
 
     })
 }
@@ -77,7 +77,7 @@ function promisGetUser(user) {
     `;
 
       resolve(info);
-      reject(erros.eror=`Ошибка парсинга`)
+      reject(erors.eror=`Ошибка парсинга`)
    })
 }
 
@@ -90,7 +90,7 @@ promisGetUsersInfo(url)
                        .then(userinfo=>addUserInfo(userinfo))
         })
     })
-    .catch(err => console.error(erros.eror));
+    .catch(err => console.error(erors.eror));
 
 
         const onNameCick = e =>{
