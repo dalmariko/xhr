@@ -86,7 +86,7 @@ promisGetUsersInfo(url)
                        addUserInfo(userinfo);
         })
     })
-    .catch(error => console.error(err));
+    .catch(error => console.error(errors.error));
 
 
         const onNameCick = e =>{
