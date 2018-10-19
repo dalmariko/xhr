@@ -18,40 +18,25 @@
 // TODO: при клике на имя пользователя у меня должен открыться блок с подробной информацией об этом пользователе
 
 
-
-const url = 'https://jsonplaceholder.typicode.com';
-const xhr = new XMLHttpRequest();
-xhr.open('get', `${url}/users`);
-xhr.setRequestHeader("Content-type", "application/json");
-xhr.setRequestHeader("Content-Encoding", "gzip");
-xhr.send();
-xhr.addEventListener('load', () => {
-
-    const onNameCick = e =>{
-        if (e.target.classList.contains('letsShow')){
-            const div = e.target.closest('div');
-            const id = div.dataset.id;
-            const ul = document.querySelector(`div[data-id="${id}"] ul`);
-            ul.classList.toggle('hidden');
-        }
-    };
+// TODO Переписать на промисы домашнее задание по ajax с пользователями которое
 
 
-    const users = JSON.parse(xhr.responseText);
-
-    users.forEach((user) => getInfoUser(user));
-
-    const userName = document.querySelector('.users');
-    userName.addEventListener('click', onNameCick);
 
 
-});
 
+function promisGetUsersInfo(url) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('get', url);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader("Content-Encoding", "gzip");
+        xhr.send();
 
-xhr.addEventListener('error', () => {
-    console.error(`Произошла ошибка соединения по адрессу ${url}`);
-});
+        xhr.addEventListener('load',() => {resolve(JSON.parse(xhr.responseText));} );
+        xhr.addEventListener('error',() => reject(`Произошла ошибка соединения по адрессу ${url}`));
 
+    })
+}
 
 function addUserInfo(userInfo) {
     const allUsers = document.querySelector('.users');
@@ -70,18 +55,19 @@ function parseDeep(user) {
     return info;
 }
 
-function getInfoUser(user) {
-    let name;
-    let id;
-    let userInfo = '';
-    let info;
-    name = user['name'];
-    id = user['id'];
+function promisGetUser(user) {
+   return new Promise((resolve,reject)=>{
+       let name;
+       let id;
+       let userInfo = '';
+       let info;
+       name = user['name'];
+       id = user['id'];
 
-    userInfo = parseDeep(user);
+       userInfo = parseDeep(user);
 
-    info =
-        `
+       info =
+           `
         <div data-id="${id}">
             <h2 class="letsShow">${name}</h2>
             <ul class="hidden">
@@ -90,9 +76,30 @@ function getInfoUser(user) {
         </div>
     `;
 
-    addUserInfo(info);
+      resolve(info);
+   })
 }
 
+const url = 'https://jsonplaceholder.typicode.com/users';
+
+promisGetUsersInfo(url)
+    .then(users=>{
+        users.forEach(user=>{
+                       promisGetUser(user)
+                       .then(userinfo=>addUserInfo(userinfo))
+        })
+    })
+    .catch(err => console.error(err));
 
 
+        const onNameCick = e =>{
+            if (e.target.classList.contains('letsShow')){
+                const div = e.target.closest('div');
+                const id = div.dataset.id;
+                const ul = document.querySelector(`div[data-id="${id}"] ul`);
+                ul.classList.toggle('hidden');
+            }
+        };
+        const userName = document.querySelector('.users');
+        userName.addEventListener('click', onNameCick);
 
